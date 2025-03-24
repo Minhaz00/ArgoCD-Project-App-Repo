@@ -29,6 +29,8 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
+    outputs:
+      app_version: ${{ steps.app_version.outputs.version }}
     
     steps:
     - uses: actions/checkout@v3
@@ -38,13 +40,15 @@ jobs:
       run: |
         VERSION=$(node -p "require('./package.json').version")
         echo "VERSION=$VERSION" >> $GITHUB_ENV
-        echo "$VERSION" > version.txt
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        mkdir -p ./version-info
+        echo "$VERSION" > ./version-info/version.txt
 
     - name: Upload version as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: app-version
-        path: version.txt
+        path: ./version-info/version.txt
         retention-days: 1
 
     - name: Set up Docker Buildx
@@ -63,4 +67,4 @@ jobs:
         push: true        
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/my-app:${{ env.VERSION }}
         cache-from: type=gha
-        cache-to: type=gha,mode=max
+        cache-to: type=gha,mode=max 
