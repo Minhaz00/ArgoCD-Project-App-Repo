@@ -1,0 +1,43 @@
+name: Update Kubernetes Deployment
+
+on:
+  workflow_run:
+    workflows: ["Test, Build and Push Docker Image"]  
+    types:
+      - completed
+
+env:
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/my-app 
+  MANIFEST_REPO: https://github.com/Minhaz00/ArgoCD-Project-Manifests-Repo.git  
+  DEPLOYMENT_FILE: k8s-manifests/deployment.yaml  
+
+jobs:
+  update-manifest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Kubernetes Manifest Repository
+        uses: actions/checkout@v4
+        with:
+          repository: Minhaz00/ArgoCD-Project-Manifests-Repo 
+          token: ${{ secrets.K8S_MANIFEST_PAT }}
+
+
+      - name: Extract App Version
+        id: app_version
+        run: echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+
+      - name: Update Deployment Manifest
+        run: |
+          sed -i 's|image: '"$IMAGE_NAME"':.*|image: '"$IMAGE_NAME"':${{ env.VERSION }}|' $DEPLOYMENT_FILE
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # This is for private repo
+          # git remote set-url origin https://x-access-token:${{ secrets.K8S_MANIFEST_PAT }}@github.com/maxhaz71/ArgoCD-Project-Manifests-Repo.git
+          
+          git commit -am "Update deployment to version: ${{ env.VERSION }}"
+          git push origin main
