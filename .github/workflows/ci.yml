@@ -49,7 +49,7 @@ jobs:
     - name: Build Docker image
       uses: docker/build-push-action@v4
       with:
-        context: ./App
+        context: .
         push: true        
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/my-app:${{ env.VERSION }}
         cache-from: type=gha
