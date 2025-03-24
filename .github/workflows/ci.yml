@@ -50,7 +50,7 @@ jobs:
       uses: docker/build-push-action@v4
       with:
         context: ./App
-        push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/my-app:v$VERSION
+        push: true        
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/my-app:${{ env.VERSION }}
         cache-from: type=gha
         cache-to: type=gha,mode=max 
