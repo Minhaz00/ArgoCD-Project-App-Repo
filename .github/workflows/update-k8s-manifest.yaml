@@ -16,12 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Kubernetes Manifest Repository
-        uses: actions/checkout@v4
-        with:
-          repository: Minhaz00/ArgoCD-Project-Manifests-Repo 
-          token: ${{ secrets.K8S_MANIFEST_PAT }}
-
+      - uses: actions/checkout@v3
 
       - name: Extract App Version
         id: app_version
