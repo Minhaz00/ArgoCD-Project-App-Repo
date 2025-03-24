@@ -7,7 +7,7 @@ on:
       - completed
 
 env:
-  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/my-app 
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/nodejs-cicd-app
   MANIFEST_REPO: https://github.com/Minhaz00/ArgoCD-Project-Manifests-Repo.git  
   DEPLOYMENT_FILE: k8s-manifests/deployment.yml  
 
