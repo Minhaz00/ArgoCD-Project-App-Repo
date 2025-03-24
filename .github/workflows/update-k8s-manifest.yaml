@@ -16,7 +16,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Download artifact from previous workflow
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: Test, Build and Push Docker Image
+          workflow_conclusion: success
+          name: app-version
+          path: .
+
+      - name: Read version from artifact
+        id: read_version
+        run: |
+          VERSION=$(cat version.txt)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "App version from artifact: $VERSION"
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          repository: Minhaz00/ArgoCD-Project-Manifests-Repo 
+          token: ${{ secrets.K8S_MANIFEST_PAT }}
+
 
       - name: Extract App Version
         id: app_version

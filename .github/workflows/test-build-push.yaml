@@ -35,7 +35,17 @@ jobs:
 
     - name: Extract App Version
       id: app_version
-      run: echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+      run: |
+        VERSION=$(node -p "require('./package.json').version")
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+        echo "$VERSION" > version.txt  # Save to a file
+
+    - name: Upload version as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-version
+        path: version.txt
+        retention-days: 1 
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
