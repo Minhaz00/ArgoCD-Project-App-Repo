@@ -10,7 +10,7 @@ describe('Express App', () => {
   test('GET / should return Hello from MyApp! with 200 status code', async () => {
     const response = await request(app.app).get('/');
     expect(response.statusCode).toBe(200);
-    expect(response.text).toContain('Hello from MyApp! App version 1.0.0');
+    expect(response.text).toContain('Hello from MyApp! App version 1.0.1');
   });
 
   test('GET /health should return OK with 200 status code', async () => {
